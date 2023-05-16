@@ -1,0 +1,6 @@
+{
+"email":"admin@admin.fr",
+"password":"$2y$13$3yFEEpGR4Ak/2.UH96VzJ.xYUSoHQ5.PwGWk9WZd1mQLTe5JI2vly",
+"firstName":"admin",
+"lastName":"Admin"
+}
