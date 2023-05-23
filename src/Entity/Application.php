@@ -3,10 +3,33 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\ApplicationsController;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ApiResource]
+
+//new Get(uriTemplate: '/users/{userId}/applications', controller: ApplicationsController::class),
+#[
+ApiResource(
+    operations: [
+        new Get(),
+        new Get(
+            uriTemplate: '/users/{userId}/applications',
+            controller: ApplicationsController::class,
+            name: 'applicationsByUsers'),
+        new GetCollection(),
+        new Post(),
+        new Delete(),
+        new Put(),
+        new Patch()
+    ],
+)]
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
 class Application
 {
@@ -33,6 +56,9 @@ class Application
     #[ORM\ManyToOne(inversedBy: 'applications')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $status = null;
 
     public function getId(): ?int
     {
@@ -107,6 +133,18 @@ class Application
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
