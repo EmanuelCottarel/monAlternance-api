@@ -35,6 +35,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     normalizationContext:['groups' => ['read']],
     denormalizationContext:['groups' => ['write']],
+
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
