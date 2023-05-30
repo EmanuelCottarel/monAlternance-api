@@ -4,6 +4,8 @@ namespace App\Entity;
 
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Elasticsearch\Filter\MatchFilter;
+use ApiPlatform\Elasticsearch\Filter\TermFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -13,12 +15,10 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
-use App\Controller\ApplicationsController;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 
-//new Get(uriTemplate: '/users/{userId}/applications', controller: ApplicationsController::class),
 #[
 ApiResource(
     operations: [
@@ -40,6 +40,7 @@ class Application
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     private ?string $companyName = null;
 
     #[ORM\Column(nullable: true)]
@@ -60,6 +61,7 @@ class Application
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
     private ?string $status = null;
 
     public function getId(): ?int
