@@ -24,6 +24,11 @@ services:
         bind:
             $processor: '@api_platform.doctrine.orm.state.persist_processor'
 
+    App\State\ApplicationStateProvider:
+        bind:
+            $itemProvider: '@api_platform.doctrine.orm.state.collection_provider'
+
+
     acme_api.event.authentication_success_listener:
         class: App\EventListener\AuthListener
         tags:

@@ -16,19 +16,22 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Repository\ApplicationRepository;
+use App\State\ApplicationStateProvider;
 use Doctrine\ORM\Mapping as ORM;
+
 
 
 #[
 ApiResource(
     operations: [
         new Get(),
-        new GetCollection(),
+        new GetCollection(provider: ApplicationStateProvider::class),
         new Post(),
         new Delete(),
         new Put(),
         new Patch()
     ],
+    paginationEnabled: false
 )]
 
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
@@ -57,7 +60,6 @@ class Application
 
     #[ORM\ManyToOne(inversedBy: 'applications')]
     #[ORM\JoinColumn(nullable: false)]
-    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
