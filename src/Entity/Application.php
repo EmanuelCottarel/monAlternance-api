@@ -17,23 +17,26 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Repository\ApplicationRepository;
 use App\State\ApplicationStateProvider;
+use App\State\RemindersStateProvider;
 use Doctrine\ORM\Mapping as ORM;
 
 
-
 #[
-ApiResource(
-    operations: [
-        new Get(),
-        new GetCollection(provider: ApplicationStateProvider::class),
-        new Post(),
-        new Delete(),
-        new Put(),
-        new Patch()
-    ],
-    paginationEnabled: false
-)]
-
+    ApiResource(
+        operations: [
+            new Get(),
+            new GetCollection(provider: ApplicationStateProvider::class),
+            new GetCollection(
+                uriTemplate: '/reminders',
+                provider: RemindersStateProvider::class
+            ),
+            new Post(),
+            new Delete(),
+            new Put(),
+            new Patch()
+        ],
+        paginationEnabled: false
+    )]
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
 class Application
 {

@@ -26,7 +26,11 @@ services:
 
     App\State\ApplicationStateProvider:
         bind:
-            $itemProvider: '@api_platform.doctrine.orm.state.collection_provider'
+            $collectionProvider: '@api_platform.doctrine.orm.state.collection_provider'
+
+    App\State\RemindersStateProvider:
+        bind:
+            $collectionProvider: '@api_platform.doctrine.orm.state.collection_provider'
 
 
     acme_api.event.authentication_success_listener:
