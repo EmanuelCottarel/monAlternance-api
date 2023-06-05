@@ -75,6 +75,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Application::class, orphanRemoval: true)]
     private Collection $applications;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Settings $settings = null;
+
     public function __construct()
     {
         $this->applications = new ArrayCollection();
@@ -220,6 +223,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    public function getSettings(): ?Settings
+    {
+        return $this->settings;
+    }
+
+    public function setSettings(Settings $settings): self
+    {
+        // set the owning side of the relation if necessary
+        if ($settings->getUser() !== $this) {
+            $settings->setUser($this);
+        }
+
+        $this->settings = $settings;
 
         return $this;
     }

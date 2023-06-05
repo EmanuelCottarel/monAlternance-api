@@ -16,6 +16,8 @@ class RemindersStateProvider implements ProviderInterface
     {
     }
 
+    private int $timeToReminder = 7;
+
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $user = $this->security->getUser();
@@ -23,7 +25,9 @@ class RemindersStateProvider implements ProviderInterface
         $results = array_values(array_filter(iterator_to_array($applications), fn($a) => $a->getUser() === $user));
         $categories=[];
         foreach ($results as $app) {
-            $categories[$app->getSubmitedAt()->format('d/m/Y')][] = $app;
+            $timeInterval = new \DateInterval('P'.$this->timeToReminder.'D');
+            $reminderDate = date_add(\DateTime::createFromImmutable($app->getSubmitedAt()), $timeInterval);
+            $categories[$reminderDate->format('d/m/Y')][] = $app;
         }
         return $categories;
     }
