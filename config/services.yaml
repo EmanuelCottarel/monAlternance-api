@@ -20,17 +20,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\State\UserHashPasswordProcessor:
+    App\State\Processor\UserHashPasswordProcessor:
         bind:
             $processor: '@api_platform.doctrine.orm.state.persist_processor'
 
-    App\State\ApplicationStateProvider:
-        bind:
-            $collectionProvider: '@api_platform.doctrine.orm.state.collection_provider'
-
-    App\State\RemindersStateProvider:
-        bind:
-            $collectionProvider: '@api_platform.doctrine.orm.state.collection_provider'
 
 
     acme_api.event.authentication_success_listener:

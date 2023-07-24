@@ -4,8 +4,6 @@ namespace App\Entity;
 
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Elasticsearch\Filter\MatchFilter;
-use ApiPlatform\Elasticsearch\Filter\TermFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -14,26 +12,31 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Serializer\Filter\PropertyFilter;
+use App\Dto\Application\Read\ApplicationReadDto;
+use App\Dto\Application\Write\ApplicationWriteDto;
 use App\Repository\ApplicationRepository;
-use App\State\ApplicationStateProvider;
-use App\State\RemindersStateProvider;
+use App\State\Processor\CreateApplicationProcessor;
+use App\State\Provider\ApplicationStateProvider;
+use App\State\Provider\RemindersStateProvider;
 use Doctrine\ORM\Mapping as ORM;
 
 
 #[
     ApiResource(
         operations: [
-            new Get(),
-            new GetCollection(provider: ApplicationStateProvider::class),
             new GetCollection(
                 uriTemplate: '/reminders',
                 provider: RemindersStateProvider::class
             ),
-            new Post(),
             new Delete(),
-            new Put(),
-            new Patch()
+            new Post(uriTemplate: '/application/create',
+                     input: ApplicationWriteDto::class,
+                     processor: CreateApplicationProcessor::class),
+            new Get(
+                uriTemplate: "/applications",
+                output: ApplicationReadDto::class,
+                provider: ApplicationStateProvider::class,
+            )
         ],
         paginationEnabled: false
     )]
@@ -65,9 +68,9 @@ class Application
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
-    private ?string $status = null;
+    #[ORM\ManyToOne(inversedBy: 'applications')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Status $status = null;
 
     public function getId(): ?int
     {
@@ -146,15 +149,16 @@ class Application
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?Status
     {
         return $this->status;
     }
 
-    public function setStatus(?string $status): self
+    public function setStatus(?Status $status): self
     {
         $this->status = $status;
 
         return $this;
     }
+
 }

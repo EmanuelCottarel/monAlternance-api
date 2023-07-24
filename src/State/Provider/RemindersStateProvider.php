@@ -1,6 +1,6 @@
 <?php
 
-namespace App\State;
+namespace App\State\Provider;
 
 use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
 use ApiPlatform\Metadata\Operation;
