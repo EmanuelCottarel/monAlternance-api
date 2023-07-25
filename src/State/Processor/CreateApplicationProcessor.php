@@ -30,7 +30,7 @@ class CreateApplicationProcessor implements ProcessorInterface
             ->setCompanyName($data->companyName)
             ->setEmail($data->email)
             ->setSubmitedAt($data->submitedAt)
-            ->setPhoneNumber($data->phoneNumber)
+            ->setPhoneNumber(str_replace(" ","",$data->phoneNumber))
             ->setUser($this->security->getUser())
             ->setWebSite($data->webSite)
             ->setStatus($this->statusRepository->findOneBy(["title" => $data->status]));
