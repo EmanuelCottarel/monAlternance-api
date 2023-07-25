@@ -11,7 +11,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Dto\Application\Read\ApplicationReadDto;
 use App\Dto\Application\Write\ApplicationWriteDto;
 use App\Repository\ApplicationRepository;
@@ -21,25 +20,29 @@ use App\State\Provider\RemindersStateProvider;
 use Doctrine\ORM\Mapping as ORM;
 
 
-#[
-    ApiResource(
-        operations: [
-            new GetCollection(
-                uriTemplate: '/reminders',
-                provider: RemindersStateProvider::class
-            ),
-            new Delete(),
-            new Post(uriTemplate: '/application/create',
-                     input: ApplicationWriteDto::class,
-                     processor: CreateApplicationProcessor::class),
-            new Get(
-                uriTemplate: "/applications",
-                output: ApplicationReadDto::class,
-                provider: ApplicationStateProvider::class,
-            )
-        ],
-        paginationEnabled: false
-    )]
+#[ApiResource(
+    operations       : [
+        new GetCollection(
+            uriTemplate: '/reminders',
+            provider   : RemindersStateProvider::class
+        ),
+        new Delete(),
+        new Post(
+            uriTemplate: '/application/create',
+            input      : ApplicationWriteDto::class,
+            processor  : CreateApplicationProcessor::class),
+        new Patch(
+            uriTemplate: '/application/update/{id}',
+            input      : ApplicationWriteDto::class,
+            processor  : CreateApplicationProcessor::class),
+        new Get(
+            uriTemplate: "/applications",
+            output     : ApplicationReadDto::class,
+            provider   : ApplicationStateProvider::class,
+        )
+    ],
+    paginationEnabled: false
+)]
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
 class Application
 {

@@ -12,16 +12,20 @@ use Symfony\Bundle\SecurityBundle\Security;
 class CreateApplicationProcessor implements ProcessorInterface
 {
 
-public function __construct(public Security              $security,
-                           public StatusRepository      $statusRepository,
-                           public ApplicationRepository $applicationRepository)
-{
+    public function __construct(public Security              $security,
+                                public StatusRepository      $statusRepository,
+                                public ApplicationRepository $applicationRepository)
+    {
 
-}
+    }
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Application
     {
-        $application = new Application();
+        if (isset($uriVariables['id'])) {
+            $application = $this->applicationRepository->find($uriVariables['id']);
+        } else {
+            $application = new Application();
+        }
         $application
             ->setCompanyName($data->companyName)
             ->setEmail($data->email)
