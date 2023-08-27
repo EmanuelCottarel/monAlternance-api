@@ -5,7 +5,6 @@ namespace App\DataFixtures;
 use App\Entity\Application;
 use App\Entity\Status;
 use App\Entity\User;
-use App\Repository\ApplicationRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -16,8 +15,8 @@ class AppFixtures extends Fixture
 {
 
     public function __construct(
-        private readonly StatusRepository      $statusRepository,
-        private readonly UserRepository        $userRepository)
+        private readonly StatusRepository $statusRepository,
+        private readonly UserRepository   $userRepository)
     {
         $this->faker = Faker\Factory::create("fr_FR");
         $this->faker->seed('FF54');
@@ -86,7 +85,8 @@ class AppFixtures extends Fixture
                     ->setPhoneNumber($this->faker->phoneNumber())
                     ->setSubmitedAt(new \DateTimeImmutable())
                     ->setStatus($this->faker->randomElement($this->statusRepository->findAll()))
-                    ->setUser($user);
+                    ->setUser($user)
+                    ->setListIndex($i);
 
                 $manager->persist($application);
             }
