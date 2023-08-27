@@ -12,9 +12,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Dto\Application\Read\ApplicationReadDto;
+use App\Dto\Application\Write\ApplicationListIndexDto;
 use App\Dto\Application\Write\ApplicationWriteDto;
 use App\Repository\ApplicationRepository;
 use App\State\Processor\CreateApplicationProcessor;
+use App\State\Processor\UpdateApplicationIndexProcessor;
 use App\State\Provider\ApplicationStateProvider;
 use App\State\Provider\RemindersStateProvider;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,6 +37,11 @@ use Doctrine\ORM\Mapping as ORM;
             uriTemplate: '/application/update/{id}',
             input      : ApplicationWriteDto::class,
             processor  : CreateApplicationProcessor::class),
+        new Patch(
+            uriTemplate: '/application/update-index',
+            input: ApplicationListIndexDto::class,
+            processor: UpdateApplicationIndexProcessor::class
+        ),
         new Get(
             uriTemplate: "/applications",
             output     : ApplicationReadDto::class,
@@ -74,6 +81,9 @@ class Application
     #[ORM\ManyToOne(inversedBy: 'applications')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Status $status = null;
+
+    #[ORM\Column]
+    private ?int $listIndex = null;
 
     public function getId(): ?int
     {
@@ -160,6 +170,18 @@ class Application
     public function setStatus(?Status $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getListIndex(): ?int
+    {
+        return $this->listIndex;
+    }
+
+    public function setListIndex(int $listIndex): self
+    {
+        $this->listIndex = $listIndex;
 
         return $this;
     }

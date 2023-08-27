@@ -19,7 +19,7 @@ class ApplicationStateProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         $user = $this->security->getUser();
-        $applications = $this->applicationRepository->findBy(["user" => $user]);
+        $applications = $this->applicationRepository->findApplicationsByUser($user);
 
         $formattedApplication = [];
         foreach ($applications as $application) {
