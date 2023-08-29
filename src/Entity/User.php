@@ -10,8 +10,10 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\ApplicationsController;
+use App\Dto\Application\Write\UserProfileDataDto;
 use App\Repository\UserRepository;
 use App\State\Processor\UserHashPasswordProcessor;
+use App\State\Provider\UserProfileDataProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,16 +24,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
 
-    operations:[
+    operations            : [
         new Get(),
         new GetCollection(),
         new Post(processor: UserHashPasswordProcessor::class),
         new Delete(),
         new Put(processor: UserHashPasswordProcessor::class),
-        new Patch(processor: UserHashPasswordProcessor::class)
+        new Patch(processor: UserHashPasswordProcessor::class),
+        new Get(uriTemplate: "/user/profile",
+                output     : UserProfileDataDto::class,
+                provider   : UserProfileDataProvider::class)
     ],
-    normalizationContext:['groups' => ['read']],
-    denormalizationContext:['groups' => ['write']],
+    normalizationContext  : ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
 
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -104,7 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
