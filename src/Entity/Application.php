@@ -19,6 +19,8 @@ use App\State\Processor\CreateApplicationProcessor;
 use App\State\Processor\UpdateApplicationIndexProcessor;
 use App\State\Provider\ApplicationStateProvider;
 use App\State\Provider\RemindersStateProvider;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -84,6 +86,14 @@ class Application
 
     #[ORM\Column]
     private ?int $listIndex = null;
+
+    #[ORM\OneToMany(mappedBy: 'application', targetEntity: Interaction::class, orphanRemoval: true)]
+    private Collection $interactions;
+
+    public function __construct()
+    {
+        $this->interactions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -182,6 +192,36 @@ class Application
     public function setListIndex(int $listIndex): self
     {
         $this->listIndex = $listIndex;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Interaction>
+     */
+    public function getInteractions(): Collection
+    {
+        return $this->interactions;
+    }
+
+    public function addInteraction(Interaction $interaction): self
+    {
+        if (!$this->interactions->contains($interaction)) {
+            $this->interactions->add($interaction);
+            $interaction->setApplication($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInteraction(Interaction $interaction): self
+    {
+        if ($this->interactions->removeElement($interaction)) {
+            // set the owning side to null (unless already changed)
+            if ($interaction->getApplication() === $this) {
+                $interaction->setApplication(null);
+            }
+        }
 
         return $this;
     }
