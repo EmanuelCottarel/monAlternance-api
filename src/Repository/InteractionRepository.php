@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Application;
 use App\Entity\Interaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,16 @@ class InteractionRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getInteractionsByApplication(Application $application){
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.application = :app')
+            ->setParameter('app', $application)
+            ->orderBy('i.date', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
 //    /**

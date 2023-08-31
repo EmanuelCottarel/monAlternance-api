@@ -31,6 +31,7 @@ class CreateApplicationProcessor implements ProcessorInterface
             ->setCompanyName($data->companyName)
             ->setEmail($data->email)
             ->setSubmitedAt($data->submitedAt)
+            ->setUpdatedAt(new \DateTimeImmutable())
             ->setPhoneNumber(str_replace(" ", "", $data->phoneNumber))
             ->setUser($user)
             ->setWebSite($data->webSite)

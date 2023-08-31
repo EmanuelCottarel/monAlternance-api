@@ -6,6 +6,7 @@ use App\Repository\InteractionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: InteractionRepository::class)]
 class Interaction
 {

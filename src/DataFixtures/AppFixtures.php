@@ -89,9 +89,10 @@ class AppFixtures extends Fixture
                 $application = new Application();
                 $application->setCompanyName($this->faker->company())
                     ->setEmail($this->faker->email())
-                    ->setWebSite("www" . $application->getCompanyName() . ".com")
-                    ->setPhoneNumber($this->faker->phoneNumber())
+                    ->setWebSite("www." . $application->getCompanyName() . ".com")
+                    ->setPhoneNumber("1234567890")
                     ->setSubmitedAt(new \DateTimeImmutable())
+                    ->setUpdatedAt(new \DateTimeImmutable())
                     ->setStatus($this->faker->randomElement($this->statusRepository->findAll()))
                     ->setUser($user)
                     ->setListIndex($i);

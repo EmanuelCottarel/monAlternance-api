@@ -17,6 +17,7 @@ use App\Dto\Application\Write\ApplicationWriteDto;
 use App\Repository\ApplicationRepository;
 use App\State\Processor\CreateApplicationProcessor;
 use App\State\Processor\UpdateApplicationIndexProcessor;
+use App\State\Provider\ApplicationHistoryProvider;
 use App\State\Provider\ApplicationStateProvider;
 use App\State\Provider\RemindersStateProvider;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -41,13 +42,18 @@ use Doctrine\ORM\Mapping as ORM;
             processor  : CreateApplicationProcessor::class),
         new Patch(
             uriTemplate: '/application/update-index',
-            input: ApplicationListIndexDto::class,
-            processor: UpdateApplicationIndexProcessor::class
+            input      : ApplicationListIndexDto::class,
+            processor  : UpdateApplicationIndexProcessor::class
         ),
         new Get(
             uriTemplate: "/applications",
             output     : ApplicationReadDto::class,
             provider   : ApplicationStateProvider::class,
+        ),
+        new Get(
+            uriTemplate: "/application/{id}/history",
+            output     : Interaction::class,
+            provider   : ApplicationHistoryProvider::class,
         )
     ],
     paginationEnabled: false
@@ -89,6 +95,9 @@ class Application
 
     #[ORM\OneToMany(mappedBy: 'application', targetEntity: Interaction::class, orphanRemoval: true)]
     private Collection $interactions;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
@@ -222,6 +231,18 @@ class Application
                 $interaction->setApplication(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
