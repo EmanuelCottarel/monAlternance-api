@@ -1,3 +1,4 @@
 api_platform:
   formats:
     json: ['application/json']
+

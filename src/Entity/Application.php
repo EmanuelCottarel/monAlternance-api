@@ -16,6 +16,7 @@ use App\Dto\Application\Write\ApplicationListIndexDto;
 use App\Dto\Application\Write\ApplicationWriteDto;
 use App\Repository\ApplicationRepository;
 use App\State\Processor\CreateApplicationProcessor;
+use App\State\Processor\PatchApplicationProcessor;
 use App\State\Processor\UpdateApplicationIndexProcessor;
 use App\State\Provider\ApplicationHistoryProvider;
 use App\State\Provider\ApplicationStateProvider;
@@ -26,34 +27,35 @@ use Doctrine\ORM\Mapping as ORM;
 
 
 #[ApiResource(
-    operations       : [
+    operations: [
         new GetCollection(
             uriTemplate: '/reminders',
-            provider   : RemindersStateProvider::class
+            provider: RemindersStateProvider::class
         ),
         new Delete(),
         new Post(
             uriTemplate: '/application/create',
-            input      : ApplicationWriteDto::class,
-            processor  : CreateApplicationProcessor::class),
+            input: ApplicationWriteDto::class,
+            processor: CreateApplicationProcessor::class),
         new Patch(
             uriTemplate: '/application/update/{id}',
-            input      : ApplicationWriteDto::class,
-            processor  : CreateApplicationProcessor::class),
+            input: ApplicationWriteDto::class,
+            processor: PatchApplicationProcessor::class),
+
         new Patch(
             uriTemplate: '/application/update-index',
-            input      : ApplicationListIndexDto::class,
-            processor  : UpdateApplicationIndexProcessor::class
+            input: ApplicationListIndexDto::class,
+            processor: UpdateApplicationIndexProcessor::class
         ),
         new Get(
             uriTemplate: "/applications",
-            output     : ApplicationReadDto::class,
-            provider   : ApplicationStateProvider::class,
+            output: ApplicationReadDto::class,
+            provider: ApplicationStateProvider::class,
         ),
         new Get(
             uriTemplate: "/application/{id}/history",
-            output     : Interaction::class,
-            provider   : ApplicationHistoryProvider::class,
+            output: Interaction::class,
+            provider: ApplicationHistoryProvider::class,
         )
     ],
     paginationEnabled: false

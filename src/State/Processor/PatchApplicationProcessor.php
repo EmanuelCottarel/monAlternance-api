@@ -13,7 +13,7 @@ use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class CreateApplicationProcessor implements ProcessorInterface
+class PatchApplicationProcessor implements ProcessorInterface
 {
 
     public function __construct(public Security                  $security,
@@ -27,9 +27,7 @@ class CreateApplicationProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): Application
     {
         $user = $this->security->getUser();
-
-
-        $application = new Application();
+        $application = $this->applicationRepository->find($uriVariables['id']);
 
         $application
             ->setCompanyName($data->companyName)
@@ -42,14 +40,6 @@ class CreateApplicationProcessor implements ProcessorInterface
             ->setStatus($this->statusRepository->findOneBy(["title" => $data->status]))
             ->setListIndex(count($this->applicationRepository->findBy(["user" => $user])) + 1);
         $this->manager->persist($application);
-
-        $interaction = new Interaction();
-        $interaction->setApplication($application)
-            ->setType($this->interactionTypeRepository->findOneBy(["title" => InteractionTypes::EMAIL->value]))
-            ->setTitle("Premier contact")
-            ->setDate($data->submitedAt);
-
-        $this->manager->persist($interaction);
         $this->manager->flush();
 
         return $application;
