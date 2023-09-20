@@ -15,6 +15,7 @@ class UpdateApplicationIndexProcessor implements ProcessorInterface
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
+
         $userId = $this->security->getUser()->getId();
         $movedApplication = $this->applicationRepository->findOneBy(['listIndex'=>$data->lastIndex, 'user'=>$userId]);
         $replacedApplication = $this->applicationRepository->findOneBy(['listIndex'=>$data->newIndex, 'user'=>$userId]);

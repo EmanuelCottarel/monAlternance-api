@@ -3,12 +3,21 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\InteractionRepository;
+use App\State\Provider\CalendarEventProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 
-#[ApiResource]
+#[ApiResource(
+    operations:[
+        new GetCollection(
+            uriTemplate: "/calendar/events",
+            provider: CalendarEventProvider::class
+        ),
+    ]
+)]
 #[ORM\Entity(repositoryClass: InteractionRepository::class)]
 class Interaction
 {
