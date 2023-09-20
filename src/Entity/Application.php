@@ -20,6 +20,7 @@ use App\State\Processor\PatchApplicationProcessor;
 use App\State\Processor\UpdateApplicationIndexProcessor;
 use App\State\Provider\ApplicationHistoryProvider;
 use App\State\Provider\ApplicationStateProvider;
+use App\State\Provider\ChartApplicationsWeekProvider;
 use App\State\Provider\RemindersStateProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -56,6 +57,9 @@ use Doctrine\ORM\Mapping as ORM;
             uriTemplate: "/application/{id}/history",
             output: Interaction::class,
             provider: ApplicationHistoryProvider::class,
+        ),
+        new Get(
+            uriTemplate: "/chart/week", provider: ChartApplicationsWeekProvider::class
         )
     ],
     paginationEnabled: false
