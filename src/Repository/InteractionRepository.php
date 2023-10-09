@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Dto\Interaction\Read\InteractionReadDto;
 use App\Entity\Application;
 use App\Entity\Interaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -40,14 +41,35 @@ class InteractionRepository extends ServiceEntityRepository
         }
     }
 
-    public function getInteractionsByApplication(Application $application){
+    public function getInteractionsByApplication(Application $application)
+    {
         return $this->createQueryBuilder('i')
             ->andWhere('i.application = :app')
             ->setParameter('app', $application)
             ->orderBy('i.date', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    public function getInteractionsByApplicationFormat(Application $application)
+    {
+        $result = $this->createQueryBuilder('int')
+            ->select(sprintf(
+                'NEW %s(  
+		        type.title,
+		        DATE_FORMAT(int.date, :dateFormat),
+		        int.title
+		        )',
+                InteractionReadDto::class
+            ))
+            ->join('int.type', 'type')
+            ->andWhere('int.application = :app')
+            ->setParameters(["dateFormat" => "%Y-%m-%d", 'app' => $application])
+            ->orderBy('int.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        return $result;
     }
 
 //    /**
