@@ -41,19 +41,10 @@ class InteractionRepository extends ServiceEntityRepository
         }
     }
 
-    public function getInteractionsByApplication(Application $application)
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.application = :app')
-            ->setParameter('app', $application)
-            ->orderBy('i.date', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
 
     public function getInteractionsByApplicationFormat(Application $application)
     {
-        $result = $this->createQueryBuilder('int')
+        return $this->createQueryBuilder('int')
             ->select(sprintf(
                 'NEW %s(  
 		        type.title,
@@ -64,12 +55,11 @@ class InteractionRepository extends ServiceEntityRepository
             ))
             ->join('int.type', 'type')
             ->andWhere('int.application = :app')
-            ->setParameters(["dateFormat" => "%Y-%m-%d", 'app' => $application])
+            ->setParameters(["dateFormat" => "%d/%m/%Y", 'app' => $application])
             ->orderBy('int.date', 'DESC')
             ->getQuery()
             ->getResult();
 
-        return $result;
     }
 
 //    /**
